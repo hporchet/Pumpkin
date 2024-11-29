@@ -9,12 +9,12 @@ use crate::{
     coordinates::{BlockCoordinates, ChunkRelativeBlockCoordinates, XZBlockCoordinates},
     world_gen::{
         generator::{BiomeGenerator, GeneratorInit, PerlinTerrainGenerator},
-        generic_generator::GenericGenerator,
+        generic_generator::GenericPerlinGenerator,
         Seed,
     },
 };
 
-pub type PlainsGenerator = GenericGenerator<PlainsBiomeGenerator, PlainsTerrainGenerator>;
+pub type PlainsGenerator = GenericPerlinGenerator<PlainsBiomeGenerator, PlainsTerrainGenerator>;
 
 pub(crate) struct PlainsBiomeGenerator {}
 

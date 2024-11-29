@@ -1,18 +1,15 @@
 use pumpkin_core::math::vector2::Vector2;
 
 use crate::{
-    biome::Biome,
-    block::block_state::BlockState,
-    coordinates::{BlockCoordinates, XZBlockCoordinates},
-    world_gen::{
+    biome::Biome, block::block_state::BlockState, chunk::ChunkBlocks, coordinates::{BlockCoordinates, ChunkRelativeBlockCoordinates, XZBlockCoordinates}, world_gen::{
         generator::{BiomeGenerator, GeneratorInit, TerrainGenerator},
-        generic_generator::GenericGenerator,
+        generic_generator::GenericStaticGenerator,
         Seed,
-    },
+    }
 };
 
 #[expect(dead_code)]
-pub type SuperflatGenerator = GenericGenerator<SuperflatBiomeGenerator, SuperflatTerrainGenerator>;
+pub type SuperflatGenerator = GenericStaticGenerator<SuperflatBiomeGenerator, SuperflatTerrainGenerator>;
 
 pub(crate) struct SuperflatBiomeGenerator {}
 
@@ -40,12 +37,14 @@ impl GeneratorInit for SuperflatTerrainGenerator {
 impl TerrainGenerator for SuperflatTerrainGenerator {
     fn prepare_chunk(&self, _at: &Vector2<i32>) {}
     // TODO allow specifying which blocks should be at which height in the config.
-    fn generate_block(&self, at: BlockCoordinates, _: Biome) -> BlockState {
-        match *at.y {
+    fn generate_block(&self, coordinates: ChunkRelativeBlockCoordinates, at: BlockCoordinates, _: Biome, blocks: &mut ChunkBlocks) {
+        let block = match *at.y {
             -64 => BlockState::new("minecraft:bedrock").unwrap(),
             -63..=-62 => BlockState::new("minecraft:dirt").unwrap(),
             -61 => BlockState::new("minecraft:grass_block").unwrap(),
             _ => BlockState::AIR,
-        }
+        };
+
+        blocks.set_block(coordinates, block.state_id);
     }
 }

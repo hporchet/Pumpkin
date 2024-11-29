@@ -2,7 +2,6 @@ use noise::Perlin;
 use pumpkin_core::math::vector2::Vector2;
 
 use crate::biome::Biome;
-use crate::block::block_state::BlockState;
 use crate::chunk::{ChunkBlocks, ChunkData};
 use crate::coordinates::{BlockCoordinates, ChunkRelativeBlockCoordinates, XZBlockCoordinates};
 use crate::world_gen::Seed;
@@ -24,7 +23,13 @@ pub(crate) trait TerrainGenerator: Sync + Send {
     fn prepare_chunk(&self, at: &Vector2<i32>);
 
     /// Is static
-    fn generate_block(&self, at: BlockCoordinates, biome: Biome) -> BlockState;
+    fn generate_block(
+        &self,
+        coordinates: ChunkRelativeBlockCoordinates,
+        at: BlockCoordinates,
+        biome: Biome,
+        blocks: &mut ChunkBlocks,
+    );
 }
 
 pub(crate) trait PerlinTerrainGenerator: Sync + Send {
